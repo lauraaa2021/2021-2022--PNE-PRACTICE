@@ -8,6 +8,9 @@ from pathlib import Path
 #the filename corresponds to one of the files we have created in the session 4 file
 #we want to open RNU gene
 FILENAME = "ADA.txt"
+#FILENAME = "../Hello.py" # Path allows us to read other files out of s4 using that notation
+
+
 
 #we call one method to open a class file.
 #instead of using open filename as we just use the path( filename).read_text() which is going to read directly the file for us without needing to write any other thing
