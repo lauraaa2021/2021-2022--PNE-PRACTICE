@@ -80,4 +80,26 @@ class Seq:
                 d[b] += 1
                 return d
 
+    def reverse(self):
+        if self.strbases == "NULL":
+            return "NULL"
+        elif self.strbases == "Error":
+            return "Error"
+        else:
+            return self.strbases[::-1]
+
+
+    def complement(self):
+        if self.strbases == "NULL":
+            return "NULL"
+        elif self.strbases == "Error":
+            return "Error"
+        else:
+            complement = {'A': 'T', 'C': 'G', 'G': 'C', 'T': 'A'}
+            bases = list(self.strbases)
+            bases = [complement[base] for base in bases]
+            return ''.join(bases)
+
+
+
 
