@@ -71,12 +71,13 @@ class Seq:
         return a,c,g,t
 
 
-def count_1(self):
-    list_keys = ["A", "C", "G", "T"]
-    list_values = [0,0,0,0]
-    for e in self.strbases:
-        if e == list_keys:
-            list_values += 1
-    dict(zip(list_keys, list_values))
+    def payaso(self):
+        d = {"A": 0, "C": 0, "G": 0, "T": 0}
+        for b in self.strbases:
+            if self.strbases == "Null" or "Error":
+                return d
+            else:
+                d[b] += 1
+                return d
 
 
