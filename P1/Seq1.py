@@ -100,6 +100,10 @@ class Seq:
             bases = [complement[base] for base in bases]
             return ''.join(bases)
 
+    def seq_read_fasta(self, filename):
+        f = open("./sequences/" + filename +"txt", "r").read()
+        self.strbases = f[f.find("\n"):].replace("\n", "")
+
 
 
 
