@@ -78,16 +78,10 @@ def seq_process():
         d = {"A": 0, "C": 0, "G": 0, "T": 0}
         for keys in d.keys():
             d[keys] = (seq_read_fasta(FOLDER+ e + ".txt")).count(keys)
-        new_seq.append(d)
+        new_seq.append(max(d))
     return new_seq , list_genes
 
-def statistics_calculation(new_seq):
-    list_column_float = []
-    for e in new_seq:
-        list_column_float.append(float(d[e]))
-    count_unique_values = len(set(list_column_float))
-    if count_unique_values > 2:
-            maxvalue = max(list_column_float)
+
 
 
 
