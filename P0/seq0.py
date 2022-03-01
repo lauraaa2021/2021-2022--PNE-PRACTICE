@@ -75,7 +75,7 @@ def seq_complement():
     complement = {'A': 'T', 'C': 'G', 'G': 'C', 'T': 'A'}
     bases = list(seq_1)
     bases = [complement[base] for base in bases]
-    return  seq_1[:20],''.join(bases)[:20]
+    return seq_1[:20],''.join(bases)[:20]
 
 
 def seq_process():

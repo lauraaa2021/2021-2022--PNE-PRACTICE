@@ -9,8 +9,8 @@ s2 = Seq("ACTGA")
 s3 = Seq("Invalid sequence")
 
 
-print("-----| Practice 1, Exercise 3 |------")
-print(f"Sequence 1: {s1}")
+print("-----| Practice 1, Exercise 4 |------")
+print(f"Sequence 1:{s1}")
 print(f"  Length: {s1.len()}")   # give the length of name of object.len
 print(f"Sequence 2: {s2}")
 print(f"  Length: {s2.len()}")

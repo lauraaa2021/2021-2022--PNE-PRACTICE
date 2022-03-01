@@ -1,3 +1,4 @@
 import seq0
-
-print(seq0.seq_complement())
+complement = seq0.seq_complement()
+for k, v in complement:
+    print(k,":", v)
