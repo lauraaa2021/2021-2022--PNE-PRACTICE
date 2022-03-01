@@ -1,22 +1,46 @@
 import socket
 
-# SERVER IP, PORT
-# Write here the correct parameter for connecting to the
-# Teacher's server
-PORT = 21000
-IP = "212.128.253.64"
+# Configure the Server's IP and PORT
+PORT = 8000
+IP = ""
+MAX_OPEN_REQUESTS = 5
 
+# Counting the number of connections
+number_con = 0
 
-# First, create the socket
-# We will always use this parameters: AF_INET y SOCK_STREAM
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# create an INET, STREAMing socket
+serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+try:
+    serversocket.bind((IP, PORT))
+    # become a server socket
+    # MAX_OPEN_REQUESTS connect requests before refusing outside connections
+    serversocket.listen(MAX_OPEN_REQUESTS)
 
-# establish the connection to the Server (IP, PORT), a bridge
-s.connect((IP, PORT))
+    while True:
+        # accept connections from outside
+        print("Waiting for connections at {}, {} ".format(IP, PORT))
+        (clientsocket, address) = serversocket.accept()
 
-# Send data. No strings can be send, only bytes
-# It necesary to encode the string into bytes
-s.send(str.encode("HELLO FROM THE CLIENT!!!"))
-# we are not receiving anything because we don´t have the redme function, the server is sending the info but the user is not receiving
-# Closing the socket
-s.close()
+        # Another connection!e
+        number_con += 1
+
+        # Print the conection number
+        print("CONNECTION: {}. From the IP: {}".format(number_con, address))
+
+        # Read the message from the client, if any
+        msg = clientsocket.recv(2048).decode("utf-8")
+        print("Message from client: {}".format(msg))
+
+        # Send the messag
+        message = "Hello from the teacher's server"
+        send_bytes = str.encode(message)
+        # We must write bytes, not a string
+        clientsocket.send(send_bytes)
+        clientsocket.close()
+
+except socket.error:
+    print("Problems using port {}. Do you have permission?".format(PORT))
+
+except KeyboardInterrupt:
+    print("Server stopped by the user")
+    serversocket.close()
