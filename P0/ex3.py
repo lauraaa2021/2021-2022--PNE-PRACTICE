@@ -1,5 +1,6 @@
 
 import seq0
-
-print(seq0.seq_len())
+length = seq0.seq_len()
+for k,v in length:
+    print("Gene",k,"--> Length:",v)
 

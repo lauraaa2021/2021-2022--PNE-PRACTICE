@@ -42,7 +42,8 @@ def seq_count_base():
          c.append(seq_read_fasta(FOLDER + l + ".txt").count("C"))
          g.append(seq_read_fasta(FOLDER + l + ".txt").count("G"))
          t.append(seq_read_fasta(FOLDER + l + ".txt").count("T"))
-    return a, c, g, t , list_genes
+    list_genes_aux = list(zip(list_genes, a,c,g,t))
+    return list_genes_aux
 
 def seq_count():
     new_seq = []
@@ -53,13 +54,20 @@ def seq_count():
         for keys in d.keys():
             d[keys] = (seq_read_fasta(FOLDER+ e + ".txt")).count(keys)
         new_seq.append(d)
-    return new_seq, list_genes
+    list_genes_aux_1 = list(zip(list_genes, new_seq))
+    return list_genes_aux_1
 
 def seq_reverse():
+    list_names = ["Frag", "Rev"]
     FOLDER = "./sequences/"
     u_5 = seq_read_fasta(FOLDER + "U5.txt")
-    reverse = seq_read_fasta(FOLDER + "U5.txt")[::-1]
-    return u_5[:20],  reverse[:20]
+    u_5_20 = u_5[:20]
+    reverse = u_5_20[::-1]
+    list_aux = []
+    list_aux_1 = list_aux.append(u_5_20)
+    list_aux_2 = list_aux.append(reverse)
+    list_names_aux = list(zip(list_names, list_aux))
+    return list_names_aux
 
 def seq_complement():
     FOLDER = "./sequences/"
