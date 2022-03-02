@@ -72,10 +72,18 @@ def seq_reverse():
 def seq_complement():
     FOLDER = "./sequences/"
     seq_1 = seq_read_fasta(FOLDER + "U5.txt")
+    seq_1_20 = seq_1[:20]
     complement = {'A': 'T', 'C': 'G', 'G': 'C', 'T': 'A'}
-    bases = list(seq_1)
-    bases = [complement[base] for base in bases]
-    return seq_1[:20],''.join(bases)[:20]
+    bases = list(seq_1_20)
+    for element in bases:
+        com = [complement[base] for base in seq_1_20]
+    com_list = "".join(com)
+    list_names_1 = ["Frag", "Comp"]
+    list_com = []
+    list_com_1 = list_com.append(seq_1_20)
+    list_com_2 = list_com.append(com_list)
+    list_names_com = list(zip(list_names_1, list_com))
+    return list_names_com
 
 
 def seq_process():
@@ -86,8 +94,11 @@ def seq_process():
         d = {"A": 0, "C": 0, "G": 0, "T": 0}
         for keys in d.keys():
             d[keys] = (seq_read_fasta(FOLDER+ e + ".txt")).count(keys)
-        new_seq.append(max(d))
-    return new_seq , list_genes
+        maxValue = max(d.values())
+        index_max = d.values().index(maxValue)
+        new_seq.append(maxValue)
+    list_process = list(zip(list_genes, new_seq))
+    return list_process, index_max
 
 
 

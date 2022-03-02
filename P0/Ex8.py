@@ -1,3 +1,5 @@
 import seq0
-
-print(seq0.seq_process())
+process = seq0.seq_process()
+for k,v in process:
+    print("Gene",k,": Most frecuent base:",v)
+print()
