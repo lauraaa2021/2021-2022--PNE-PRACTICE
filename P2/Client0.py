@@ -1,4 +1,5 @@
 import socket
+
 class Client:
     def __init__(self, ip_client, port_client):
         self.ip = ip_client
@@ -18,3 +19,6 @@ class Client:
         response = s.recv(2048).decode("utf-8")
         s.close()
         return response
+
+
+
