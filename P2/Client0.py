@@ -1,5 +1,8 @@
 import socket
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
 class Client:
     def __init__(self, ip_client, port_client):
         self.ip = ip_client
@@ -18,7 +21,11 @@ class Client:
         s.send(str.encode(msg))
         response = s.recv(2048).decode("utf-8")
         s.close()
+<<<<<<< HEAD
         return response
 
 
 
+=======
+        return response
+>>>>>>> origin/master
