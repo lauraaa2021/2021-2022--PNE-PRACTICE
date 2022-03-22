@@ -110,6 +110,17 @@ class Seq:
         seq = seq[seq.find("\n"):].replace("\n", "")
         self.strbases = seq
 
+    def percentages(self):
+        a, c, g, t = self.count_base()
 
+        try:
 
+            per_a = round((a * 100 / (a + c + g + t)), 3)
+            per_c = round((c * 100 / (a + c + g + t)), 3)
+            per_g = round((g * 100 / (a + c + g + t)), 3)
+            per_t = round((t * 100 / (a + c + g + t)), 3)
 
+        except ZeroDivisionError:
+            print("ZEro division error is not supported by python.")
+
+        return per_a, per_c, per_t, per_g
