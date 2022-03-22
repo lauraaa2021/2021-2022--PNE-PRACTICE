@@ -17,13 +17,16 @@ class Dog:
         print("I like aritmetic")
 
     def multiply(self, first_operand, second_operand):
-        print("The result is", first_operand * second_operand)
+        try:
+            print("The result is", first_operand/second_operand)
+        except ZeroDivisionError:
+            print( "zero division error is not supported in python")
 
 ares = Dog("ares", 10)
 ares.say_your_name()
 ares.show_your_age()
 ares.what_you_like()
-ares.multiply(3,5)
+ares.multiply(3,0)
 #ares.multiply() can´t go because you are not passing enough attributes or parameters to the function or method
 
 #self is the own object so ares directly

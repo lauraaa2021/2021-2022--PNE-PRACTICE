@@ -92,11 +92,13 @@ while True:
             print(response)
 
         elif cmd == "GENE":
-            filename = ["U5", "FRAT1", "FXN", "ADA", "RNU6_269P"]
-            filename = str(filename)
-            response = Seq(arg).read_fasta(filename)
+            response = Seq()
+            response.read_fasta(arg)
             response = str(response)
             print(response)
+
+        #elif cmd == ""
+
 
         else:
             response = "Hello from happy server"
