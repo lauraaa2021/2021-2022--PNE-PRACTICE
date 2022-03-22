@@ -30,4 +30,7 @@ print(complement)
 reverse = c.talk("REV " + get_0)
 print(reverse)
 
-seq_list_1 = []
+seq_list_1 = [ "ADA", "U5"]
+for name in seq_list_1:
+    gene = c.talk("GENE " + name)
+    print(gene)
