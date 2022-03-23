@@ -11,8 +11,6 @@ class Seq:
         elif not self.validate_sequence():
             self.strbases = "Error"
             print("Invalid Seq!!")
-        elif strbases == "NULL":
-                print("Null sequence created!")
         else:
             print("New sequence created!")
 
