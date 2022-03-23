@@ -72,7 +72,7 @@ while True:
             response = "ok\n"
             print(response,"Ping command")
         elif cmd == "GET":
-            seq_list = ["ACGTCT", "GGGGTTTC", "ACTACTAG"," ATGCTGCT", "GCTCCCC"]
+            seq_list = ["ACGTCT", "GGGGTTTC", "ACTACTAG","ATGCTGCT", "GCTCCCC"]
             response = seq_list[int(arg)]
             print(response)
 
@@ -80,6 +80,7 @@ while True:
             response = Seq(arg).percentages()
             response_1 = Seq(arg).count_base()
             response = str(response) + str(response_1)
+
 
         elif cmd == "COMP":
             response = Seq(arg).complement()

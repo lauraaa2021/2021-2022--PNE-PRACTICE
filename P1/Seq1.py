@@ -121,6 +121,6 @@ class Seq:
             per_t = round((t * 100 / (a + c + g + t)), 3)
 
         except ZeroDivisionError:
-            print("ZEro division error is not supported by python.")
+            print("Zero division error is not supported by python.")
 
         return per_a, per_c, per_t, per_g
