@@ -69,7 +69,7 @@ class Seq:
         return a,c,g,t
 
 
-    def payaso(self):
+    def count(self):
         d = {"A": 0, "C": 0, "G": 0, "T": 0}
         for b in self.strbases:
             if self.strbases == "Null" or "Error":
@@ -122,3 +122,13 @@ class Seq:
             print("Zero division error is not supported by python.")
 
         return per_a, per_c, per_t, per_g
+
+
+    def add(self):
+        d = {"A": 3, "C": -2, "G": 4, "T": 6}
+        total = 0
+        for b in self.strbases:
+            total += d[b]
+        return total
+
+

@@ -36,3 +36,7 @@ seq_list_1 = [ "ADA", "U5", "FRAT1", "RNU6_269P", "FXN"]
 for name in seq_list_1:
     gene = c.talk("GENE " + name)
     print( "Printing " + name + ": " + gene)
+
+add = c.talk("ADD ACGTACGT")
+print(add)
+

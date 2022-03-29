@@ -58,7 +58,7 @@ while True:
 
         splitted_command = msg.split(' ')
         cmd = splitted_command[0]
-
+        print(splitted_command)
         if cmd != "PING":
             arg = splitted_command[1]
             print(arg)
@@ -98,8 +98,10 @@ while True:
             response = str(response)
             print(response)
 
-        #elif cmd == ""
-
+        elif cmd == "ADD":
+            response = Seq(arg).add()
+            response = str(response)
+            print(response)
 
         else:
             response = "Hello from happy server"
