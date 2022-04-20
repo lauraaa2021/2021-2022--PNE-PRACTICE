@@ -2,7 +2,7 @@ import http.server
 import socketserver
 import termcolor
 import pathlib
-
+from Seq1 import Seq
 
 # Define the Server's port
 PORT = 8080
@@ -39,10 +39,17 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                 contents = pathlib.Path("html/form-1.html").read_text()
             elif routes == "/ping?":
                 contents = pathlib.Path("html/ping.html").read_text()
-            elif routes == "/get?":
-                contents = pathlib.Path("html/get.html").read_text()
-
-
+            elif routes.startswith("/get?"):
+                seq_list = ["ACGACTCGACTCGA", "CAGTCATCTCA", "CAGACTAAGCGCGGG", "CGACGACAGCAGCAT", "AGACGACAGAT"]
+                index = int(routes.split("=")[1])
+                print(index)
+                contents = pathlib.Path("html/get.html").read_text().format(seq=index, seq_1=seq_list[index])
+            elif routes.startswith("/gene?"):
+                index = routes.split("=")[1]
+                print(index)
+                sequence = Seq()
+                sequence.read_fasta(index)
+                contents = pathlib.Path("html/gene.html").read_text().format(seq=index, seq_1=sequence)
             else:
                 filename = routes[1:]
                 contents = pathlib.Path("html/" + filename + ".html").read_text()
