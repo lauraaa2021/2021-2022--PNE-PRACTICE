@@ -8,24 +8,22 @@
     <h1>SEQ2 SERVER</h1>
     <p> Access to the server </p>
     <form action="ping" method="get">
-      Is the server OK? <br>
+      Is the server OK?
       <input type="submit" value="ping">
       </form>
     <hr>
     <form action="get" method="get">
-      Get a sequence.Select a number <br>
+      Get a sequence.Select a number
     <select name="operation">
-      <option value="0">0</option>
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-      <option value="4">4</option>
+      {% for n in range(context.n_sequences) %}
+      <option value="{{n}}">{{n}}</option>
+      {% endfor %}
     </select>
     <input type="submit" value="get">
     </form>
   <hr>
     <form action="gene" method="get">
-        Get a sequence.Select a number  <br>
+        Get a sequence.Select a number
     <select name="operation">
       <option value="U5">U5</option>
       <option value="ADA">ADA</option>
@@ -33,7 +31,6 @@
       <option value="RNU6_269P">RNU6_269P</option>
       <option value="FXN">FXN</option>
     </select>
-     <br>
     <input type="submit" value="gene">
       <br>
 

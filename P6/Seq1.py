@@ -106,7 +106,7 @@ class Seq:
         filename = "../S4/"+ filename + ".txt"
         seq = open(filename, "r").read()
         seq = seq[seq.find("\n"):].replace("\n", "")
-        self.strbases = seq
+        self.strbases = seq            #atributo para guardar las secuencias
 
     def percentages(self):
         a, c, g, t = self.count_base()
