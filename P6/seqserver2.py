@@ -19,7 +19,8 @@ def read_html_file(filename):
 
 # Define the Server's port
 PORT = 8080
-seq_list = ["ACGACTCGACTCGA", "CAGTCATCTCA", "CAGACTAAGCGCGGG", "CGACGACAGCAGCAT", "AGACGACAGAT"]   #constante
+seq_list = ["ACGACTCGACTCGA", "CAGTCATCTCA", "CAGACTAAGCGCGGG", "CGACGACAGCAGCAT", "AGACGACAGAT"]
+gene_list = ["ADA", "FRAT1", "FXN", "RNU6_269P", "U5"]#constante
 
 
 # -- This is for preventing the error: "Port already in use"
@@ -56,12 +57,12 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         print("arguments", arguments)
         try:
             if path == "/":
-                context = {"n_sequences": len(seq_list)}
+                context = {"n_sequences": len(seq_list), "gene_names": gene_list}
                 contents = read_html_file("html/form-1.html").render(context=context)
             elif path == "/ping":
                 contents = read_html_file("html/ping.html").render()
             # remember : sending strings, you can send whatever but then be transformed into a string
-            #devuelve un objeto de clase template, aunque no pasemos variable necesitamos implementarlo porque transforma el objeto template en un string y daría un error
+            # devuelve un objeto de clase template, aunque no pasemos variable necesitamos implementarlo porque transforma el objeto template en un string y daría un error
             elif path == "/get":
                 context = {"seq": arguments["operation"][0], "seq_1": seq_list[int(arguments["operation"][0])]}   # al final estamos accediendo a un diccionario y necesitamos acceder al valor de la clave que has definidio en el form
                 contents = read_html_file("html/get.html").render(context=context)   #context manda un diccionario a través de render
@@ -70,6 +71,8 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                 sequence.read_fasta(arguments["operation"][0])
                 context = {"seq": arguments["operation"][0], "seq_1": sequence.strbases}
                 contents = read_html_file("html/gene.html").render(context=context)
+            #elif path == "\info":
+
             else:
                 filename = routes[1:]
                 contents = pathlib.Path("html/" + filename + ".html").read_text()
