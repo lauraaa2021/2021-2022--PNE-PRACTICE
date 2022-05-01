@@ -123,6 +123,13 @@ class Seq:
 
         return per_a, per_c, per_t, per_g
 
+    def convert_message(self):
+        message = ""
+        j = self.count_base()
+        j = dict(j)
+        for k, v in j.items():
+            message += k + ": " + str(v[0]) + " (" + str(v[1]) + "%)" + "\n"
+        return message
 
     def add(self):
         d = {"A": 3, "C": -2, "G": 4, "T": 6}
@@ -131,4 +138,14 @@ class Seq:
             total += d[b]
         return total
 
-
+    def seq_process(self):
+        lista = []
+        list_genes = ["U5", "FRAT1", "ADA", "RNU6_269P", "FXN"]
+        FOLDER = "./sequences/"
+        for e in list_genes:
+            d = {"A": 0, "C": 0, "G": 0, "T": 0}
+            for keys in d.keys():
+                d[keys] = (seq_read_fasta(FOLDER + e + ".txt")).count(keys)
+            max_value = max(d.values())
+            lista.append(max_value)
+        return list(zip(list_genes, lista))

@@ -87,18 +87,16 @@ def seq_complement():
 
 
 def seq_process():
-    new_seq = []
+    lista = []
     list_genes = ["U5", "FRAT1", "ADA", "RNU6_269P", "FXN"]
     FOLDER = "./sequences/"
     for e in list_genes:
         d = {"A": 0, "C": 0, "G": 0, "T": 0}
         for keys in d.keys():
             d[keys] = (seq_read_fasta(FOLDER+ e + ".txt")).count(keys)
-        maxValue = max(d.values())
-        index_max = d.values().index(maxValue)
-        new_seq.append(maxValue)
-    list_process = list(zip(list_genes, new_seq))
-    return list_process, index_max
+        max_value = max(d.values())
+        lista.append(max_value)
+    return list(zip(list_genes, lista))
 
 
 
