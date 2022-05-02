@@ -71,8 +71,16 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                 sequence.read_fasta(arguments["operation"][0])
                 context = {"seq": arguments["operation"][0], "seq_1": sequence.strbases}
                 contents = read_html_file("html/gene.html").render(context=context)
-            #elif path == "\info":
-
+            elif path == "/operation":
+                sequence = arguments["msg"][0]
+                operation = arguments["operation"][0]
+                sequence_1 = Seq(sequence)
+                if operation == "Rev":
+                    contents = read_html_file("html/operation.html").render(context={"operation":operation, "result": sequence_1.reverse()})
+                elif operation == "Info":
+                    contents = read_html_file("html/operation.html").render(context={"operation":operation,"result": sequence_1.count_base()})
+                elif operation == "Comp":
+                    contents = read_html_file("html/operation.html").render(context={"operation":operation,"result": sequence_1.complement()})
             else:
                 filename = routes[1:]
                 contents = pathlib.Path("html/" + filename + ".html").read_text()

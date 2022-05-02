@@ -51,13 +51,15 @@ print("GENE: " + gene_input)
 print("Description: " + data1["desc"])
 length = Seq(data1["seq"]).len()
 print("Total length: " + str(length))
-base_count = Seq(data1["seq"]).count_base()
+base_count = Seq(data1["seq"]).count()
 percentage = Seq(data1["seq"]).percentages()
 listing = ["A", "C", "G", "T"]
 new_list = list(zip(base_count, percentage))
 new_list_1 = list(zip(listing, new_list))
 for k,v in new_list_1:
     print(k , ": " , v)
+most_freq = base_count.seq_process(data1)
+print(most_freq)
 
 
 
