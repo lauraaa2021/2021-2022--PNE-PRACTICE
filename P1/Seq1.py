@@ -142,4 +142,4 @@ class Seq:
         max_value = max(d.values())
         for k, v in d.items():
             if d[k] == max_value:
-                return k
+                return k + str(v)

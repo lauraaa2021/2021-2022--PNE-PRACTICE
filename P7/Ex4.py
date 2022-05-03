@@ -49,16 +49,18 @@ data1 = json.loads(data1)
 
 print("GENE: " + gene_input)
 print("Description: " + data1["desc"])
-length = Seq(data1["seq"]).len()
+s = Seq(data1["seq"])
+length = s.len()
 print("Total length: " + str(length))
-base_count = Seq(data1["seq"]).count()
-percentage = Seq(data1["seq"]).percentages()
+base_count = s.count1()
+percentage = s.percentages()
 listing = ["A", "C", "G", "T"]
 new_list = list(zip(base_count, percentage))
 new_list_1 = list(zip(listing, new_list))
 for k,v in new_list_1:
     print(k , ": " , v)
-most_freq = base_count.seq_process(data1)
+print("base count type is: ", type(base_count))
+most_freq = s.seq_process(base_count)
 print(most_freq)
 
 

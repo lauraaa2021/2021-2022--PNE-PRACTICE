@@ -66,10 +66,19 @@ class Seq:
                 g += 1
             elif e == "T":
                 t += 1
-        return a,c,g,t
+        return a, c, g, t
 
 
     def count(self):
+        d = {"A": 0, "C": 0, "G": 0, "T": 0}
+        #if self.strbases == "Null" or "Error":
+            #return d
+        #else:
+        for b in d.keys():
+            d[b] = self.strbases.count(b)
+        return d
+
+    def count1(self):
         d = {"A": 0, "C": 0, "G": 0, "T": 0}
         #if self.strbases == "Null" or "Error":
             #return d
