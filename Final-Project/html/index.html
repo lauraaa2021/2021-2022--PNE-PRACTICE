@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Browsing Human and Vertebrates genome</title>
+  </head>
+  <body>
+    <h1>Browsing Human and Vertebrates genome</h1>
+    <p> BASIC Level Services </p>
+  <form action="/listSpecies" method="get">
+    1) List of species in the genome database
+    Limit: <input type="text" name="n_species">
+      <br>
+    </form>
+  <form action="/karyotype" method="get">
+    2) Information about the karyotype
+    Select the species: <input type="text" name="species_karyo">
+      <input type="submit" value="Send">
+    </form>
+  <form action="/chromosomeLength" method="get">
+    3) Chromosome Length
+    Select the species: <input type="text" name="name_species">
+    Select a chromosome: <input type="text" name="chromosome">
+      <input type="submit" value="Send">
+    </form>
