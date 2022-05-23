@@ -28,7 +28,9 @@ def server_call(url_parse, params=""):  #empleamos dos comillas porque los valor
     data1 = r1.read().decode("utf-8")
     #decodifica el mensaje traído desde ensemble y lo convierte a un json que es un diccionario
     data1 = json.loads(data1)
-    return data1   # el diccionario con los valores cogidos de ensemble
+    return data1 # el diccionario con los valores cogidos de ensemble
+
+
 
 
 
@@ -36,6 +38,7 @@ def read_html_file(filename):
     contents = pathlib.Path(filename).read_text()
     contents = jinja2.Template(contents)          # funcionalidad igual que con .format en string / es un objeto de clase template
     return contents                         #.format para strings y para jinja2 usamos render.
+
 
 
 socketserver.TCPServer.allow_reuse_address = True
@@ -58,10 +61,13 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         print("arguments", arguments)
         path = url_parse.path    # el módulo url_parse coge la ruta sin la interrogación
         print("path: ", path)
-
+        genes_dict = {"SRCAP": "ENSG00000080603", "FRAT1": "ENSG00000165879", "ADA": "ENSG00000196839",
+                      "FXN": "ENSG00000165060", "RNU6_269P": "ENSG00000212379", "MIR633": "ENSG00000207588",
+                      "TTTY4C": "ENS00000228296", "RBMY2YP": "ENSG00000227633", "FGFR3": "ENSG00000068078",
+                      "KDR": "ENSG00000128052", "ANK2": "ENSG00000145362"}
         #try:
         if path == "/":
-            contents = read_html_file("html/index.html").render()
+            contents = read_html_file("html/index.html").render(context={"genes_dict": genes_dict})
         elif path == "/listSpecies":
             list_species = []
             ensemble_answer = server_call("/info/species")
@@ -69,12 +75,9 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                 n_species = int(arguments["n_species"][0])
             except KeyError:
                 n_species = len(ensemble_answer["species"])
-            #print(ensemble_answer)
             for i in range(n_species):
                 list_species.append(ensemble_answer["species"][i]["name"])
             contents = read_html_file("html/species.html").render(context={"species":list_species})
-            #print(contents)
-            print(list_species)
         elif path == "/karyotype":
             list_karyotypes = []
             species_karyo = arguments["species_karyo"][0]
@@ -85,12 +88,38 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
             name_species = arguments["name_species"][0]
             chromosome = arguments["chromosome"][0]
             ensemble_answer = server_call("/info/assembly/" + name_species)
-            print(ensemble_answer)
             length = 0
             for d in ensemble_answer["top_level_region"]:
                 if d["coord_system"] == "chromosome" and d["name"] == chromosome:
                     length = d["length"]
             contents = read_html_file("html/chromosome.html").render(context={"length":length})
+        elif path == "/geneSeq":
+           gene_name = arguments["gene"][0]
+           gene_id = genes_dict[gene_name]
+           ensemble_answer = server_call("/sequence/id/" + gene_id)
+           print(ensemble_answer)
+           contents = read_html_file("html/geneSeq.html").render(context={"gene_sequence": ensemble_answer["seq"]})
+        elif path == "/geneInfo":
+            gene_name = arguments["gene"][0]
+            gene_id = genes_dict[gene_name]
+            ensemble_answer = server_call("/sequence/id/" + gene_id)
+            chromosome = ensemble_answer["desc"].split(":")
+            start_chromosome = chromosome[2]
+            end_chromosome = chromosome[3]
+            length = int(end_chromosome) - int(start_chromosome)
+            contents = read_html_file("html/geneInfo.html").render(context={"gene_name": gene_name,"gene_id": gene_id, "start_chromosome": start_chromosome, "end_chromosome":end_chromosome, "length": length })
+        elif path == "/geneCalc":
+            gene_name = arguments["gene"][0]
+            gene_id = genes_dict[gene_name]
+            ensemble_answer = server_call("/sequence/id/" + gene_id)
+            gene_sequence = ensemble_answer["seq"]
+            chromosome = ensemble_answer["desc"].split(":")
+            start_chromosome = chromosome[2]
+            end_chromosome = chromosome[3]
+            s = Seq(ensemble_answer)
+            gene_percentages = s.percentages()
+            length = int(end_chromosome) - int(start_chromosome)
+            contents = read_html_file("html/geneCalc.html").render(context={"gene_percentages": gene_percentages, "length": length})
         elif path == "/favicon.ico":
             contents = read_html_file("html/index.html").render()
         else:

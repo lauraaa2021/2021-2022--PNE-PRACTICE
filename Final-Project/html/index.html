@@ -2,24 +2,67 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
+    <body style="background-color: lightblue ;">
     <title>Browsing Human and Vertebrates genome</title>
   </head>
   <body>
     <h1>Browsing Human and Vertebrates genome</h1>
-    <p> BASIC Level Services </p>
+    <h2><b>BASIC Level Services </b></h2>
+    <hr>
   <form action="/listSpecies" method="get">
-    1) List of species in the genome database
+    1) List of species in the genome database<br><br>
     Limit: <input type="text" name="n_species">
       <br>
+      <hr>
     </form>
   <form action="/karyotype" method="get">
-    2) Information about the karyotype
+    2) Information about the karyotype<br><br>
     Select the species: <input type="text" name="species_karyo">
       <input type="submit" value="Send">
+      <br>
+      <hr>
     </form>
   <form action="/chromosomeLength" method="get">
-    3) Chromosome Length
+    3) Chromosome Length<br><br>
     Select the species: <input type="text" name="name_species">
     Select a chromosome: <input type="text" name="chromosome">
       <input type="submit" value="Send">
+      <br>
+      <hr>
     </form>
+  <h2><b>MEDIUM Level Services </b></h2>
+  <hr>
+    <form action="/geneSeq" method="get">
+    4) Select a gene: <br><br>
+    <select name="gene">
+      {% for n in context.genes_dict %}
+      <option value= {{n}}>{{n}}</option>
+      {% endfor %}
+    </select>
+    <input type="submit" value="Get sequence!!">
+      <br>
+      <hr>
+    </form>
+  <form action="/geneInfo" method="get">
+    5) Select a gene for information: <br><br>
+    <select name="gene">
+      {% for n in context.genes_dict %}
+      <option value= {{n}}>{{n}}</option>
+      {% endfor %}
+    </select>
+    <input type="submit" value="Get info!!">
+      <br>
+      <hr>
+    </form>
+  <form action="/geneCalc" method="get">
+    6) Select a gene for calculations: <br><br>
+    <select name="gene">
+      {% for n in context.genes_dict %}
+      <option value= {{n}}>{{n}}</option>
+      {% endfor %}
+    </select>
+    <input type="submit" value="Get calculations!!">
+      <br>
+      <hr>
+    </form>
+
