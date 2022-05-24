@@ -17,7 +17,6 @@ conn = http.client.HTTPConnection(SERVER)
 print(f"\nConnecting to server: {SERVER}\n")
 
 # Connect with the server
-conn = http.client.HTTPConnection(SERVER)
 
 
 # do we need
@@ -42,7 +41,10 @@ data1 = r1.read().decode("utf-8")
 print(f"CONTENT: {data1}")
 # -- Send the request message, using the GET method. We are
 # -- requesting the main page (/)
-data1 = json.loads(data1)  # we transform our previous data 1 string into a idctionary
+data1 = json.loads(data1)
+
+
+# we transform our previous data 1 string into a idctionary
 # -- Print the received data
 if data1["ping"] == 1:
     print("Ping ok")

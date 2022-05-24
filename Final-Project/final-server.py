@@ -1,7 +1,7 @@
 import http.server
 import socketserver
 import termcolor
-import pathlib
+from pathlib import Path
 from Seq1 import Seq
 import jinja2
 from urllib.parse import urlparse, parse_qs
@@ -28,14 +28,14 @@ def server_call(url_parse, params=""):  #empleamos dos comillas porque los valor
     data1 = r1.read().decode("utf-8")
     #decodifica el mensaje traído desde ensemble y lo convierte a un json que es un diccionario
     data1 = json.loads(data1)
-    return data1 # el diccionario con los valores cogidos de ensemble
+    return data1  # el diccionario con los valores cogidos de ensemble
 
 
 
 
 
 def read_html_file(filename):
-    contents = pathlib.Path(filename).read_text()
+    contents = Path(filename).read_text()
     contents = jinja2.Template(contents)          # funcionalidad igual que con .format en string / es un objeto de clase template
     return contents                         #.format para strings y para jinja2 usamos render.
 
@@ -61,11 +61,14 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         print("arguments", arguments)
         path = url_parse.path    # el módulo url_parse coge la ruta sin la interrogación
         print("path: ", path)
-        genes_dict = {"SRCAP": "ENSG00000080603", "FRAT1": "ENSG00000165879", "ADA": "ENSG00000196839",
+        genes_dict = {"FRAT1": "ENSG00000165879", "ADA": "ENSG00000196839",
                       "FXN": "ENSG00000165060", "RNU6_269P": "ENSG00000212379", "MIR633": "ENSG00000207588",
-                      "TTTY4C": "ENS00000228296", "RBMY2YP": "ENSG00000227633", "FGFR3": "ENSG00000068078",
+                      "TTTY4C": "ENSG00000226906", "RBMY2YP": "ENSG00000227633", "FGFR3": "ENSG00000068078",
                       "KDR": "ENSG00000128052", "ANK2": "ENSG00000145362"}
-        #try:
+
+
+        #BASIC LEVEL
+
         if path == "/":
             contents = read_html_file("html/index.html").render(context={"genes_dict": genes_dict})
         elif path == "/listSpecies":
@@ -73,61 +76,99 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
             ensemble_answer = server_call("/info/species")
             try:
                 n_species = int(arguments["n_species"][0])
+                n_species_1 = len(ensemble_answer["species"])
+                if n_species <= n_species_1:
+                    for i in range(n_species_1):
+                        list_species.append(ensemble_answer["species"][i]["name"])
+                    contents = read_html_file("html/species.html").render(context={"species":list_species})
+                else:
+                    contents = read_html_file("html/error.html").render(context={"error_range": "Introduce a number within the list range."})
             except KeyError:
-                n_species = len(ensemble_answer["species"])
-            for i in range(n_species):
-                list_species.append(ensemble_answer["species"][i]["name"])
-            contents = read_html_file("html/species.html").render(context={"species":list_species})
+                contents = read_html_file("html/species.html").render(context={"species": list_species})
+            except ValueError:
+                contents = read_html_file("html/error.html").render(context={"value_error":"Please introduce an integer number."})
         elif path == "/karyotype":
-            list_karyotypes = []
-            species_karyo = arguments["species_karyo"][0]
-            ensemble_answer = server_call("/info/assembly/" + species_karyo)
-            list_karyotypes.append(ensemble_answer["karyotype"])
-            contents = read_html_file("html/karyotype.html").render(context={"karyotype_list": ensemble_answer["karyotype"]})
+            try:
+                list_karyotypes = []
+                species_karyo = arguments["species_karyo"][0]
+                ensemble_answer = server_call("/info/assembly/" + species_karyo)
+                list_karyotypes.append(ensemble_answer["karyotype"])
+                contents = read_html_file("html/karyotype.html").render(context={"karyotype_list": ensemble_answer["karyotype"]})
+            except KeyError:
+                contents = read_html_file("html/error.html").render(context={"key_error_k": "Please introduce valid species."})
         elif path == "/chromosomeLength":
-            name_species = arguments["name_species"][0]
-            chromosome = arguments["chromosome"][0]
-            ensemble_answer = server_call("/info/assembly/" + name_species)
-            length = 0
-            for d in ensemble_answer["top_level_region"]:
-                if d["coord_system"] == "chromosome" and d["name"] == chromosome:
-                    length = d["length"]
-            contents = read_html_file("html/chromosome.html").render(context={"length":length})
+            try:
+                name_species = arguments["name_species"][0]
+                chromosome = arguments["chromosome"][0]
+                ensemble_answer = server_call("/info/assembly/" + name_species)
+                length = 0
+                for d in ensemble_answer["top_level_region"]:
+                    if d["coord_system"] == "chromosome" and d["name"] == chromosome:
+                        length = d["length"]
+                    else:
+                        contents = read_html_file("html/error.html").render(context={"chromosome_error": "Please introduce a correct chromosome number."})
+                contents = read_html_file("html/chromosome.html").render(context={"length":length})
+            except KeyError:
+                contents = read_html_file("html/error.html").render(context={"key_error_l": "Please introduce a valid key."})
+
+
+
+        #MEDIUM LEVEL
         elif path == "/geneSeq":
            gene_name = arguments["gene"][0]
            gene_id = genes_dict[gene_name]
            ensemble_answer = server_call("/sequence/id/" + gene_id)
-           print(ensemble_answer)
-           contents = read_html_file("html/geneSeq.html").render(context={"gene_sequence": ensemble_answer["seq"]})
+           contents = read_html_file("html/geneSeq.html").render(context={"gene_name": gene_name,"gene_sequence": ensemble_answer["seq"]})
         elif path == "/geneInfo":
             gene_name = arguments["gene"][0]
             gene_id = genes_dict[gene_name]
             ensemble_answer = server_call("/sequence/id/" + gene_id)
-            chromosome = ensemble_answer["desc"].split(":")
-            start_chromosome = chromosome[2]
-            end_chromosome = chromosome[3]
-            length = int(end_chromosome) - int(start_chromosome)
-            contents = read_html_file("html/geneInfo.html").render(context={"gene_name": gene_name,"gene_id": gene_id, "start_chromosome": start_chromosome, "end_chromosome":end_chromosome, "length": length })
+            try:
+                chromosome = ensemble_answer["desc"].split(":")
+                start_chromosome = chromosome[2]
+                end_chromosome = chromosome[3]
+                length = int(end_chromosome) - int(start_chromosome)
+                contents = read_html_file("html/geneInfo.html").render(context={"gene_name": gene_name,"gene_id": gene_id, "start_chromosome": start_chromosome, "end_chromosome":end_chromosome, "length": length })
+            except:
+                contents = read_html_file("html/error.html").render(context={"not_found_info": "Sorry we are not able to find the information for that gene, choose another one."})
         elif path == "/geneCalc":
-            gene_name = arguments["gene"][0]
-            gene_id = genes_dict[gene_name]
-            ensemble_answer = server_call("/sequence/id/" + gene_id)
-            gene_sequence = ensemble_answer["seq"]
-            chromosome = ensemble_answer["desc"].split(":")
-            start_chromosome = chromosome[2]
-            end_chromosome = chromosome[3]
-            s = Seq(ensemble_answer)
-            gene_percentages = s.percentages()
-            length = int(end_chromosome) - int(start_chromosome)
-            contents = read_html_file("html/geneCalc.html").render(context={"gene_percentages": gene_percentages, "length": length})
+            try:
+                gene_name = arguments["gene"][0]
+                gene_id = genes_dict[gene_name]
+                ensemble_answer = server_call("/sequence/id/" + gene_id)
+                gene_sequence = ensemble_answer["seq"]
+                chromosome = ensemble_answer["desc"].split(":")
+                start_chromosome = chromosome[2]
+                end_chromosome = chromosome[3]
+                s = Seq(gene_sequence)
+                gene_percentages = s.percentages()
+                if start_chromosome or end_chromosome == int:
+                    length = int(end_chromosome) - int(start_chromosome)
+                    contents = read_html_file("html/geneCalc.html").render(context={"gene_name": gene_name, "gene_percentages": gene_percentages, "length": length})
+                else:
+                    contents = read_html_file("html/error.html").render(context={"not_found_calcu": "Sorry we haven´t been able to find the calculations."})
+            except:
+                contents = read_html_file("html/error.html").render(context={"not_found_calcu": "Sorry we haven´t been able to find the calculations."})
+        elif path == "/geneList":
+            chromo = arguments["chromo"][0]
+            start = arguments["start_position"][0]
+            end = arguments["end_position"][0]
+            print("The chromo arguments are", chromo)
+            print("The start position is", start)
+            print("The end position is", end)
+            ensemble_answer = server_call("/phenotype/region/homo_sapiens/"  + chromo + ":"+ start + "-" + end )
+            print("ensemble answer", ensemble_answer)
+            gene_name = 0
+            for g in ensemble_answer:
+                if g == "associated_gene":
+                    gene_name = g
+
+            contents = read_html_file("html/geneList.html").render(context={"gene_name": gene_name})
         elif path == "/favicon.ico":
             contents = read_html_file("html/index.html").render()
         else:
             filename = routes[1:]
-            contents = pathlib.Path("html/" + filename + ".html").read_text()
-        #except Exception as e:
-            #contents = pathlib.Path("html/error.html").read_text()
-            #print(e)
+            contents = Path("html/" + filename + ".html").read_text()
 
         # Generating the response message
         self.send_response(200)  # -- Status line: OK!
@@ -145,6 +186,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         # IN this simple server version:
         # We are NOT processing the client's request
         # We are NOT generating any response message
+
         return
 
 
