@@ -75,18 +75,16 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
             list_species = []
             ensemble_answer = server_call("/info/species")
             try:
-                n_species = int(arguments["n_species"][0])
-                n_species_1 = len(ensemble_answer["species"])
-                if n_species <= n_species_1:
-                    for i in range(n_species_1):
-                        list_species.append(ensemble_answer["species"][i]["name"])
-                    contents = read_html_file("html/species.html").render(context={"species":list_species})
+                if "n_species" in arguments and int(arguments["n_species"][0]) <= len(ensemble_answer["species"]):
+                    n_species = int(arguments["n_species"][0])
                 else:
-                    contents = read_html_file("html/error.html").render(context={"error_range": "Introduce a number within the list range."})
-            except KeyError:
-                contents = read_html_file("html/species.html").render(context={"species": list_species})
+                    n_species = len(ensemble_answer["species"])
+                for i in range(n_species):
+                    list_species.append(ensemble_answer["species"][i]["name"])
+                context = {"species":list_species}
+                contents = read_html_file("html/species.html").render(context=context)
             except ValueError:
-                contents = read_html_file("html/error.html").render(context={"value_error":"Please introduce an integer number."})
+                contents = read_html_file("html/error.html").render(context={"error":"Please introduce an integer number."})
         elif path == "/karyotype":
             try:
                 list_karyotypes = []
@@ -95,7 +93,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                 list_karyotypes.append(ensemble_answer["karyotype"])
                 contents = read_html_file("html/karyotype.html").render(context={"karyotype_list": ensemble_answer["karyotype"]})
             except KeyError:
-                contents = read_html_file("html/error.html").render(context={"key_error_k": "Please introduce valid species."})
+                contents = read_html_file("html/error.html").render(context={"error": "Please introduce valid species."})
         elif path == "/chromosomeLength":
             try:
                 name_species = arguments["name_species"][0]
@@ -105,11 +103,12 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                 for d in ensemble_answer["top_level_region"]:
                     if d["coord_system"] == "chromosome" and d["name"] == chromosome:
                         length = d["length"]
-                    else:
-                        contents = read_html_file("html/error.html").render(context={"chromosome_error": "Please introduce a correct chromosome number."})
-                contents = read_html_file("html/chromosome.html").render(context={"length":length})
+                if length == 0:
+                    contents = read_html_file("html/error.html").render(context={"error": "Please introduce a correct chromosome number."})
+                else:
+                    contents = read_html_file("html/chromosome.html").render(context={"length":length})
             except KeyError:
-                contents = read_html_file("html/error.html").render(context={"key_error_l": "Please introduce a valid key."})
+                contents = read_html_file("html/error.html").render(context={"error": "Please introduce a valid key."})
 
 
 
@@ -130,7 +129,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                 length = int(end_chromosome) - int(start_chromosome)
                 contents = read_html_file("html/geneInfo.html").render(context={"gene_name": gene_name,"gene_id": gene_id, "start_chromosome": start_chromosome, "end_chromosome":end_chromosome, "length": length })
             except:
-                contents = read_html_file("html/error.html").render(context={"not_found_info": "Sorry we are not able to find the information for that gene, choose another one."})
+                contents = read_html_file("html/error.html").render(context={"error": "Sorry we are not able to find the information for that gene, choose another one."})
         elif path == "/geneCalc":
             try:
                 gene_name = arguments["gene"][0]
@@ -146,26 +145,29 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                     length = int(end_chromosome) - int(start_chromosome)
                     contents = read_html_file("html/geneCalc.html").render(context={"gene_name": gene_name, "gene_percentages": gene_percentages, "length": length})
                 else:
-                    contents = read_html_file("html/error.html").render(context={"not_found_calcu": "Sorry we haven´t been able to find the calculations."})
+                    contents = read_html_file("html/error.html").render(context={"error": "Sorry we haven´t been able to find the calculations."})
             except:
-                contents = read_html_file("html/error.html").render(context={"not_found_calcu": "Sorry we haven´t been able to find the calculations."})
+                contents = read_html_file("html/error.html").render(context={"error": "Sorry we haven´t been able to find the calculations."})
         elif path == "/geneList":
             chromo = arguments["chromo"][0]
             start = arguments["start_position"][0]
             end = arguments["end_position"][0]
-            print("The chromo arguments are", chromo)
-            print("The start position is", start)
-            print("The end position is", end)
-            ensemble_answer = server_call("/phenotype/region/homo_sapiens/"  + chromo + ":"+ start + "-" + end )
-            print("ensemble answer", ensemble_answer)
-            gene_name = 0
+            ensemble_answer = server_call("/phenotype/region/homo_sapiens/" + chromo + ":" + start + "-" + end)
+            gene_list =[]
             for g in ensemble_answer:
-                if g == "associated_gene":
-                    gene_name = g
-
-            contents = read_html_file("html/geneList.html").render(context={"gene_name": gene_name})
+                gene_name = g["phenotype_associations"]
+                print("G", g)
+                for v in gene_name:
+                    if "attributes" in v:
+                        if "associated_gene" in v["attributes"]:
+                            gene_list.append("associated_gene")
+                        print("GENE LIST", gene_list)
+                    else:
+                        contents = read_html_file("html/error.html").render(context={"error": "This is not within the dictionary."})
+            #crear lista ( 2 for y 2 if, inicializar la lista y append los associated gene)
+            contents = read_html_file("html/geneList.html").render(context={"gene_name": gene_list})
         elif path == "/favicon.ico":
-            contents = read_html_file("html/index.html").render()
+            contents = read_html_file("html/index.html").render(context={"genes_dict": genes_dict})
         else:
             filename = routes[1:]
             contents = Path("html/" + filename + ".html").read_text()
