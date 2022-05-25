@@ -160,7 +160,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                 for v in gene_name:
                     if "attributes" in v:
                         if "associated_gene" in v["attributes"]:
-                            gene_list.append("associated_gene")
+                            gene_list.append(v)
                         print("GENE LIST", gene_list)
                     else:
                         contents = read_html_file("html/error.html").render(context={"error": "This is not within the dictionary."})
