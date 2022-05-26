@@ -75,7 +75,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
             list_species = []
             ensemble_answer = server_call("/info/species")
             try:
-                if "n_species" in arguments and int(arguments["n_species"][0]) <= len(ensemble_answer["species"]):
+                if "n_species" in arguments and int(arguments["n_species"][0]) <= len(ensemble_answer["species"]) :
                     n_species = int(arguments["n_species"][0])
                 else:
                     n_species = len(ensemble_answer["species"])
@@ -85,8 +85,6 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                 contents = read_html_file("html/species.html").render(context=context)
             except ValueError:
                 contents = read_html_file("html/error.html").render(context={"error":"Please introduce an integer number."})
-            except TypeError:
-                contents = read_html_file("html/error.html").render(context={"error": "Please introduce an integer number, negative numbers aren´t recognized."})
         elif path == "/karyotype":
             try:
                 list_karyotypes = []

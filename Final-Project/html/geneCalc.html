@@ -7,9 +7,10 @@
   <body style="background-color: lightcoral;">
     <h1>GENE: {{context.gene_name}}</h1>
     <p>The percentages are: </p>
-<ul>{% for n,v in context.gene_percentages %}
-      <li>{{n}} : {{v}}% <li/>
-    {% endfor %}</ul>
+{% for n,v in context.gene_percentages %}
+     <br> {{n}} : {{v}}% </br>
+    {% endfor %}
+    <br>
     <hr>
     <p>The total gene length is: {{context.length}}</p>
     <a  href= "/">Main page</a>
