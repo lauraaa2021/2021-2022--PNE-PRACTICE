@@ -167,8 +167,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                                 gene_list.append(v["attributes"]["associated_gene"])
                             contents = read_html_file("html/geneList.html").render(context={"gene_name": gene_list})
                         else:
-                            contents = read_html_file("html/error.html").render(context={"error": "This is not within the dictionary."})
-            #crear lista ( 2 for y 2 if, inicializar la lista y append los associated gene)
+                            pass
             except KeyError:
                 contents = read_html_file("html/error.html").render(context={"error": "Please fill all the gaps and enter an integer number. Strings aren´t recognized."})
             except TypeError:
