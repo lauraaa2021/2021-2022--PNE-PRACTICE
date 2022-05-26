@@ -97,18 +97,21 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         elif path == "/chromosomeLength":
             try:
                 name_species = arguments["name_species"][0]
-                chromosome = arguments["chromosome"][0]
+                number_chromosome = int(arguments["chromosome"][0])
                 ensemble_answer = server_call("/info/assembly/" + name_species)
-                length = 0
+                name_chromosomes = []
                 for d in ensemble_answer["top_level_region"]:
-                    if d["coord_system"] == "chromosome" and d["name"] == chromosome:
-                        length = d["length"]
-                if length == 0:
-                    contents = read_html_file("html/error.html").render(context={"error": "Please introduce a correct chromosome number."})
-                else:
-                    contents = read_html_file("html/chromosome.html").render(context={"length":length})
+                    if d["coord_system"] == "chromosome" and d["length"] >= number_chromosome:
+                        name_chromosomes.append(d["name"])
+                    print("The chromosomes names are", name_chromosomes)
+                print(name_chromosomes)
+                contents = read_html_file("html/chromosome.html").render(context={"chromosomes_list": name_chromosomes})
+                if number_chromosome < 0:
+                    contents = read_html_file("html/error.html").render(context={"error": "Please introduce a valid key."})
             except KeyError:
                 contents = read_html_file("html/error.html").render(context={"error": "Please introduce a valid key."})
+            except ValueError:
+                contents = read_html_file("html/error.html").render(context={"error": "Please try again."})
 
 
 
