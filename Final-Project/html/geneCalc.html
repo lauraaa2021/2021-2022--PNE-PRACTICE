@@ -2,11 +2,15 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>PING OK!</title>
+    <title>GENE CALCULATION!</title>
   </head>
-  <body style="background-color: lightsalmon;">
+  <body style="background-color: lightcoral;">
     <h1>GENE: {{context.gene_name}}</h1>
-    <p>The percentages are: {{context.gene_percentages}}</p>
+    <p>The percentages are: </p>
+<ul>{% for n,v in context.gene_percentages %}
+      <li>{{n}} : {{v}}% <li/>
+    {% endfor %}</ul>
+    <hr>
     <p>The total gene length is: {{context.length}}</p>
     <a  href= "/">Main page</a>
   </body>

@@ -2,9 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>List Species </title>
+    <title>GENE LIST!! </title>
 </head>
-<body style="background-color: lightgreen;">
-<p> The gene name associated with the data entered is: {{context.gene_name}}</p>
+<body style="background-color:mediumpurple;">
+<h2> The gene names associated with the data entered are:</h2>
+<hr>
+<ul>{% for g in context.gene_name %}
+    <li>{{g}}</li>
+{% endfor %}</ul>
+<a  href= "/">Main page</a>
 </body>
 </html>

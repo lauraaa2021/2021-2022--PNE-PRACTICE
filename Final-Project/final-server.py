@@ -85,6 +85,8 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                 contents = read_html_file("html/species.html").render(context=context)
             except ValueError:
                 contents = read_html_file("html/error.html").render(context={"error":"Please introduce an integer number."})
+            except TypeError:
+                contents = read_html_file("html/error.html").render(context={"error": "Please introduce an integer number, negative numbers aren´t recognized."})
         elif path == "/karyotype":
             try:
                 list_karyotypes = []
@@ -139,33 +141,40 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                 chromosome = ensemble_answer["desc"].split(":")
                 start_chromosome = chromosome[2]
                 end_chromosome = chromosome[3]
+                bases_list = ["A", "C", "G", "T"]
                 s = Seq(gene_sequence)
                 gene_percentages = s.percentages()
+                list_percentages = []
+                list_percentages.append(gene_percentages)
+                list_percentages1 = list(zip(bases_list,gene_percentages))
                 if start_chromosome or end_chromosome == int:
                     length = int(end_chromosome) - int(start_chromosome)
-                    contents = read_html_file("html/geneCalc.html").render(context={"gene_name": gene_name, "gene_percentages": gene_percentages, "length": length})
+                    contents = read_html_file("html/geneCalc.html").render(context={"gene_name": gene_name, "gene_percentages": list_percentages1, "length": length})
                 else:
                     contents = read_html_file("html/error.html").render(context={"error": "Sorry we haven´t been able to find the calculations."})
             except:
                 contents = read_html_file("html/error.html").render(context={"error": "Sorry we haven´t been able to find the calculations."})
         elif path == "/geneList":
-            chromo = arguments["chromo"][0]
-            start = arguments["start_position"][0]
-            end = arguments["end_position"][0]
-            ensemble_answer = server_call("/phenotype/region/homo_sapiens/" + chromo + ":" + start + "-" + end)
-            gene_list =[]
-            for g in ensemble_answer:
-                gene_name = g["phenotype_associations"]
-                print("G", g)
-                for v in gene_name:
-                    if "attributes" in v:
-                        if "associated_gene" in v["attributes"]:
-                            gene_list.append(v)
-                        print("GENE LIST", gene_list)
-                    else:
-                        contents = read_html_file("html/error.html").render(context={"error": "This is not within the dictionary."})
+            try:
+                chromo = arguments["chromo"][0]
+                start = arguments["start_position"][0]
+                end = arguments["end_position"][0]
+                ensemble_answer = server_call("/phenotype/region/homo_sapiens/" + chromo + ":" + start + "-" + end)
+                gene_list =[]
+                for g in ensemble_answer:
+                    gene_name = g["phenotype_associations"]
+                    for v in gene_name:
+                        if "attributes" in v:
+                            if "associated_gene" in v["attributes"]:
+                                gene_list.append(v["attributes"]["associated_gene"])
+                            contents = read_html_file("html/geneList.html").render(context={"gene_name": gene_list})
+                        else:
+                            contents = read_html_file("html/error.html").render(context={"error": "This is not within the dictionary."})
             #crear lista ( 2 for y 2 if, inicializar la lista y append los associated gene)
-            contents = read_html_file("html/geneList.html").render(context={"gene_name": gene_list})
+            except KeyError:
+                contents = read_html_file("html/error.html").render(context={"error": "Please fill all the gaps and enter an integer number. Strings aren´t recognized."})
+            except TypeError:
+                contents = read_html_file("html/error.html").render(context={"error": "Please enter an integer number, negative numbers are not recognized."})
         elif path == "/favicon.ico":
             contents = read_html_file("html/index.html").render(context={"genes_dict": genes_dict})
         else:
